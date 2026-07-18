@@ -9,7 +9,6 @@ const sendEmail = async (options) => {
     throw new Error('SMTP email credentials are not defined in environment variables');
   }
 
-  // Define Gmail SMTP email transporter explicitly with timeouts
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -18,21 +17,15 @@ const sendEmail = async (options) => {
     },
   });
 
+  await transporter.verify();
+  console.log("SMTP verified successfully");
+
   const mailOptions = {
     from: `"ExpensePilot" <${process.env.EMAIL_USER}>`,
     to: options.to,
     subject: options.subject,
     html: options.html
   };
-
-  // Verify SMTP connection configuration
-  try {
-    await transporter.verify();
-    console.log('Nodemailer SMTP connection verification succeeded!');
-  } catch (error) {
-    console.error('Nodemailer SMTP connection verification failed:', error);
-    throw error;
-  }
 
   try {
     return await transporter.sendMail(mailOptions);
