@@ -11,7 +11,8 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
   'http://127.0.0.1:5173',
-  'http://127.0.0.1:3000'
+  'http://127.0.0.1:3000',
+  'https://expense-pilot-93cb7t70j-sai-mukesh.vercel.app'
 ];
 
 app.use(cors({
@@ -22,19 +23,23 @@ app.use(cors({
     const clientUrl = process.env.CLIENT_URL;
     const origins = [...allowedOrigins];
     if (clientUrl) {
-      origins.push(clientUrl);
+      // Support comma-separated URLs in CLIENT_URL (e.g. preview and production links)
+      const parsedUrls = clientUrl.split(',').map(url => url.trim());
+      origins.push(...parsedUrls);
     }
     
     const isAllowed = origins.some(allowedOrigin => {
       const normOrigin = origin.replace(/\/$/, "");
       const normAllowed = allowedOrigin.replace(/\/$/, "");
       return normOrigin === normAllowed;
-    });
+    }) || /^https:\/\/expense-pilot-[a-z0-9-]+-sai-mukesh\.vercel\.app$/.test(origin.replace(/\/$/, ""))
+       || /^https:\/\/expense-pilot-sai-mukesh\.vercel\.app$/.test(origin.replace(/\/$/, ""));
 
     if (isAllowed) {
       return callback(null, true);
     } else {
-      return callback(new Error('Not allowed by CORS'), false);
+      console.warn(`CORS Blocked: Origin '${origin}' not found in allowed list`);
+      return callback(null, false);
     }
   },
   credentials: true
