@@ -12,8 +12,6 @@ import AddTransaction from './pages/AddTransaction';
 import EditTransaction from './pages/EditTransaction';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
 
 // Components
 import Navbar from './components/Navbar';
@@ -92,8 +90,6 @@ function App() {
           {/* Public Authentication Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} />
 
           {/* Secure Application Routes */}
           <Route
