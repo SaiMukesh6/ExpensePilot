@@ -176,7 +176,7 @@ const forgotPassword = async (req, res, next) => {
 
       res.status(200).json(genericResponse);
     } catch (err) {
-      console.error('Password reset email failed:', err.message);
+      console.error('Password reset email failed:', err);
       // Reset the fields since sending failed
       user.resetPasswordToken = undefined;
       user.resetPasswordExpire = undefined;

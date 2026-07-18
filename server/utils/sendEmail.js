@@ -9,13 +9,18 @@ const sendEmail = async (options) => {
     throw new Error('SMTP email credentials are not defined in environment variables');
   }
 
-  // Define Gmail SMTP email transporter
+  // Define Gmail SMTP email transporter explicitly with timeouts
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // true for 465, false for other ports
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS // Gmail App Password
-    }
+    },
+    connectionTimeout: 15000, // 15 seconds
+    greetingTimeout: 15000,   // 15 seconds
+    socketTimeout: 30000      // 30 seconds
   });
 
   const mailOptions = {
@@ -25,7 +30,19 @@ const sendEmail = async (options) => {
     html: options.html
   };
 
-  await transporter.sendMail(mailOptions);
+  try {
+    return await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error('Nodemailer SMTP Error Details:', {
+      message: error.message,
+      code: error.code,
+      command: error.command,
+      response: error.response,
+      responseCode: error.responseCode,
+      stack: error.stack
+    });
+    throw error;
+  }
 };
 
 module.exports = sendEmail;
