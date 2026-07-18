@@ -11,16 +11,11 @@ const sendEmail = async (options) => {
 
   // Define Gmail SMTP email transporter explicitly with timeouts
   const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // true for 465, false for other ports
+    service: "gmail",
     auth: {
       user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS // Gmail App Password
+      pass: process.env.EMAIL_PASS,
     },
-    connectionTimeout: 15000, // 15 seconds
-    greetingTimeout: 15000,   // 15 seconds
-    socketTimeout: 30000      // 30 seconds
   });
 
   const mailOptions = {
